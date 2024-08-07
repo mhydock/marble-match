@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://cn7rb7f6cm82m"]
+
+[ext_resource type="Script" path="res://spawner.gd" id="1_aiuxp"]
+[ext_resource type="Texture2D" uid="uid://c88m0oc1267c3" path="res://assets/images/border.png" id="2_f2mb6"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_axg7r"]
+a = Vector2(256, 0)
+b = Vector2(-256, 0)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_j7j4k"]
+a = Vector2(0, -336)
+b = Vector2(0, 344)
+
+[node name="root" type="Node2D"]
+script = ExtResource("1_aiuxp")
+
+[node name="arena" type="StaticBody2D" parent="."]
+position = Vector2(368, 8)
+collision_layer = 2
+collision_mask = 2
+
+[node name="bottom" type="CollisionShape2D" parent="arena"]
+position = Vector2(272, 688)
+shape = SubResource("SegmentShape2D_axg7r")
+
+[node name="left" type="CollisionShape2D" parent="arena"]
+position = Vector2(16, 344)
+shape = SubResource("SegmentShape2D_j7j4k")
+
+[node name="right" type="CollisionShape2D" parent="arena"]
+position = Vector2(528, 344)
+shape = SubResource("SegmentShape2D_j7j4k")
+
+[node name="border" type="NinePatchRect" parent="."]
+offset_left = 368.0
+offset_top = 8.0
+offset_right = 912.0
+offset_bottom = 712.0
+texture = ExtResource("2_f2mb6")
+patch_margin_left = 47
+patch_margin_top = 47
+patch_margin_right = 47
+patch_margin_bottom = 47
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1

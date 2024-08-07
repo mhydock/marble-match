@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bw0n6kmsptwwn"]
+
+[ext_resource type="Script" path="res://selection_border.gd" id="1_0kkk8"]
+[ext_resource type="Texture2D" uid="uid://csigkyv8c7wfy" path="res://assets/images/selection.png" id="1_pgvid"]
+
+[node name="selection_border" type="Line2D"]
+closed = true
+texture = ExtResource("1_pgvid")
+texture_mode = 1
+script = ExtResource("1_0kkk8")

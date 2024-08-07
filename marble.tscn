@@ -1,0 +1,74 @@
+[gd_scene load_steps=12 format=3 uid="uid://c0jg3mb6kbg00"]
+
+[ext_resource type="Texture2D" uid="uid://sjoq64frf714" path="res://assets/images/ball_shine.png" id="1_i3u0a"]
+[ext_resource type="Texture2D" uid="uid://v6tsdthl0uxy" path="res://assets/images/ball_shadow.png" id="2_1iubb"]
+[ext_resource type="Texture2D" uid="uid://cb7wofw5uuwrx" path="res://assets/images/ball_color.png" id="3_v2b34"]
+[ext_resource type="Texture2D" uid="uid://cnqw141pxix7d" path="res://assets/images/ball_outline.png" id="4_8qvsd"]
+[ext_resource type="Script" path="res://ball_toucher.gd" id="5_d4xbp"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w4c1v"]
+friction = 0.0
+bounce = 0.2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_didvy"]
+radius = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qmy8t"]
+radius = 32.1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_oayb6"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_de75d"]
+blend_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_37ots"]
+radius = 24.0
+
+[node name="marble" type="RigidBody2D" groups=["balls"]]
+collision_mask = 3
+physics_material_override = SubResource("PhysicsMaterial_w4c1v")
+lock_rotation = true
+continuous_cd = 2
+
+[node name="ball_toucher" type="Area2D" parent="."]
+collision_layer = 2
+input_pickable = false
+script = ExtResource("5_d4xbp")
+lobes = 6
+excludeParent = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ball_toucher"]
+shape = SubResource("CircleShape2D_didvy")
+
+[node name="collider" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_qmy8t")
+
+[node name="shine" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_oayb6")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_i3u0a")
+
+[node name="shadow" type="Sprite2D" parent="."]
+position = Vector2(9.53674e-07, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_1iubb")
+
+[node name="color" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_de75d")
+position = Vector2(9.53674e-07, 9.53674e-07)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_v2b34")
+
+[node name="outline" type="Sprite2D" parent="."]
+position = Vector2(9.53674e-07, 9.53674e-07)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_8qvsd")
+
+[node name="mouse_over" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="mouse_over"]
+shape = SubResource("CircleShape2D_37ots")
+
+[connection signal="input_event" from="mouse_over" to="ball_toucher" method="_on_input_event"]
+[connection signal="mouse_entered" from="mouse_over" to="ball_toucher" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="mouse_over" to="ball_toucher" method="_on_mouse_exited"]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfl2j1s3i2yh5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mt42q"]
+radius = 30.0
+
+[node name="bumper" type="CollisionShape2D"]
+rotation = -0.785398
+shape = SubResource("CircleShape2D_mt42q")
