@@ -11,8 +11,10 @@ var displayBorder = false
 var mouseInside = false
 var border
 var tweener
-var queuedRemove = false
 
+func are_bodies_valid(bodies):
+	return bodies.all(func(body): return !body.freeze and body.linear_velocity.x < 0.1 and body.linear_velocity.y < 0.1)
+	
 func shouldShowBorder():
 	var bodies = get_overlapping_bodies()
 
@@ -22,13 +24,16 @@ func shouldShowBorder():
 	if len(bodies) != lobes:
 		return false
 		
-	return bodies.all(func(body): return body.sleeping)
+	return are_bodies_valid(bodies)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
+	if mouseInside:
+		print(displayBorder, '  ', border)
+		
 	if displayBorder and border == null:
 		border = selection.instantiate()
 		border.lobes = lobes
@@ -49,11 +54,10 @@ func _process(delta):
 		for body in bodies:
 			body.z_index = 0
 			
-	if not queuedRemove:
-		check_for_matches()
+	check_for_matches()
 
 func _physics_process(delta):
-	if mouseInside and not displayBorder and not queuedRemove:
+	if mouseInside and not displayBorder:
 		displayBorder = shouldShowBorder()
 
 func _on_mouse_entered():
@@ -65,19 +69,19 @@ func _on_mouse_exited():
 	displayBorder = false
 
 func _on_input_event(viewport, event, shape_idx):
-	if queuedRemove:
-		return
-
 	if event is InputEventMouseButton and event.is_pressed() and displayBorder and border != null and (tweener == null or !tweener.is_running()):
+		var bodies = get_overlapping_bodies()
+		if excludeParent:
+			bodies = bodies.filter(func(body): return body != self.get_parent())
+			
+		if not are_bodies_valid(bodies):
+			return
+		
 		var dir = -1 if event.button_index == 1 else 1
 		tweener = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO).set_parallel()
 		
 		var rot = border.get_rotation()
 		tweener.tween_property(border, "rotation", rot + dir*2*PI/lobes, .5)
-		
-		var bodies = get_overlapping_bodies()
-		if excludeParent:
-			bodies = bodies.filter(func(body): return body != self.get_parent())
 		
 		PhysicsServer2D.set_active(false)
 		tweener.connect("finished", func(): PhysicsServer2D.set_active(true))
@@ -99,18 +103,15 @@ func _on_input_event(viewport, event, shape_idx):
 func check_for_matches():
 	var bodies = get_overlapping_bodies()
 	
-	if len(bodies) != lobes or !bodies.all(func(body): return body.sleeping):
+	if len(bodies) != lobes or !are_bodies_valid(bodies):
 		return
 		
 	var color = bodies[0].get_node("color").modulate
 	var matches = bodies.all(func(body): return color == body.get_node("color").modulate)
 	
 	if matches:
-		queuedRemove = true
+		for body in bodies: body.freeze = true
+		displayBorder = false
 		queue_remove.emit(bodies)
-		if border:
-			self.remove_child(border)
-			border = null
+		
 
-func _on_body_exited(body):
-	queuedRemove = false

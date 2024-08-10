@@ -23,6 +23,7 @@ var colors = [
 ]
 
 var balls_to_remove = {}
+var balls_removing = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -74,17 +75,21 @@ func _ready():
 
 func ball_remover(marbles: Array[Node2D]):
 	for ball in marbles:
-		balls_to_remove[ball] = 0
+		if ball not in balls_removing:
+			balls_to_remove[ball] = 0
 
 func _process(delta):
 	if len(balls_to_remove) > 0:
 
 		for ball in balls_to_remove.keys():
-			ball.set_sleeping(false)
+			balls_removing[ball] = 0
+			balls_to_remove.erase(ball)
 			var tweener = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO).set_parallel(true)
 			tweener.tween_property(ball.get_node("color"), "modulate", Color(1, 1, 1), .3)
 			tweener.tween_property(ball, "scale", Vector2(.90, .90), .2)
 			tweener.chain().tween_property(ball, "scale", Vector2(1.1, 1.1), .05)
-			tweener.connect("finished", func(): ball.queue_free())
-			balls_to_remove.clear()
+			tweener.connect("finished", func(): 
+				ball.queue_free()
+				balls_removing.erase(ball)
+			)
 

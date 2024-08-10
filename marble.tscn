@@ -27,6 +27,7 @@ radius = 24.0
 [node name="marble" type="RigidBody2D" groups=["balls"]]
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_w4c1v")
+can_sleep = false
 lock_rotation = true
 continuous_cd = 2
 
