@@ -75,6 +75,9 @@ func _ready():
 
 func ball_remover(marbles: Array[Node2D]):
 	for ball in marbles:
+		if ball.is_queued_for_deletion():
+			continue
+
 		if ball not in balls_removing:
 			balls_to_remove[ball] = 0
 
@@ -82,6 +85,9 @@ func _process(delta):
 	if len(balls_to_remove) > 0:
 
 		for ball in balls_to_remove.keys():
+			if ball in balls_removing:
+				continue 
+
 			balls_removing[ball] = 0
 			balls_to_remove.erase(ball)
 			var tweener = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO).set_parallel(true)

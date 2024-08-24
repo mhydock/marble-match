@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cn7rb7f6cm82m"]
+[gd_scene load_steps=6 format=3 uid="uid://cn7rb7f6cm82m"]
 
 [ext_resource type="Script" path="res://spawner.gd" id="1_aiuxp"]
 [ext_resource type="Texture2D" uid="uid://c88m0oc1267c3" path="res://assets/images/border.png" id="2_f2mb6"]
+[ext_resource type="Script" path="res://arena.gd" id="2_ly4n7"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_axg7r"]
 a = Vector2(256, 0)
@@ -18,6 +19,7 @@ script = ExtResource("1_aiuxp")
 position = Vector2(368, 8)
 collision_layer = 2
 collision_mask = 2
+script = ExtResource("2_ly4n7")
 
 [node name="bottom" type="CollisionShape2D" parent="arena"]
 position = Vector2(272, 688)
@@ -43,3 +45,5 @@ patch_margin_right = 47
 patch_margin_bottom = 47
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+
+[connection signal="input_event" from="arena" to="arena" method="_on_input_event"]

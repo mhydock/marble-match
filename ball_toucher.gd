@@ -13,7 +13,7 @@ var border
 var tweener
 
 func are_bodies_valid(bodies):
-	return bodies.all(func(body): return !body.freeze and body.linear_velocity.x < 0.1 and body.linear_velocity.y < 0.1)
+	return bodies.all(func(body): return body.linear_velocity.x < 0.1 and body.linear_velocity.y < 0.1)
 	
 func shouldShowBorder():
 	var bodies = get_overlapping_bodies()
@@ -30,9 +30,9 @@ func shouldShowBorder():
 func _ready():
 	pass # Replace with function body.
 
-func _process(delta):
-	if mouseInside:
-		print(displayBorder, '  ', border)
+func _physics_process(delta):
+	if mouseInside and not displayBorder:
+		displayBorder = shouldShowBorder()
 		
 	if displayBorder and border == null:
 		border = selection.instantiate()
@@ -54,11 +54,8 @@ func _process(delta):
 		for body in bodies:
 			body.z_index = 0
 			
+func _process(delta):
 	check_for_matches()
-
-func _physics_process(delta):
-	if mouseInside and not displayBorder:
-		displayBorder = shouldShowBorder()
 
 func _on_mouse_entered():
 	mouseInside = true
@@ -110,7 +107,6 @@ func check_for_matches():
 	var matches = bodies.all(func(body): return color == body.get_node("color").modulate)
 	
 	if matches:
-		for body in bodies: body.freeze = true
 		displayBorder = false
 		queue_remove.emit(bodies)
 		
